@@ -42,10 +42,13 @@ AS (
         FROM trips 
 )
  
-SELECT startDate, start_station, COUNT(*) AS tot
-FROM trips_simple
-GROUP BY startDate, start_station
-ORDER BY tot desc;
+SELECT startDate, start_station, 
+   COUNT(CASE WHEN st.docks_available = 0 THEN 1 END) AS empty_tot
+FROM trips_simple tr
+  JOIN status st
+    ON tr.station_id = st.station_id
+GROUP BY tr.startDate, tr.start_station
+ORDER BY empty_tot desc;
 
 
 Results:	San Fransisco Caltrain 2 (330 Townsend)
